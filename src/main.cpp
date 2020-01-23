@@ -9,19 +9,11 @@ DigitalOut ledVermell(D9); //O2
 DigitalOut ledGroc(D6); //O3
 
 Serial pc(USBTX, USBRX);
-Serial device(PC_6, PA_12);
+Serial device(D1, D0);
 
 unsigned char receivedvalue;
 bool pc_activity;
 
-void send_bytes(uint8_t len ,uint8_t data)
-{
-    device.putc(len);
-    while(len>0) {
-        device.putc(data);
-        len--;
-    }
-}
 
 int main() {
 
@@ -40,17 +32,17 @@ int main() {
             rx =device.getc();
             pc.printf("\n Received %x \nSending : %x",rx,rx);
             switch (rx) {
-                case 49:
-                    send_bytes(1,rx);
+                case 49: //1
+                    ledVermell.write(ledVermell.read() == 1 ? 0 : 1);
                     break;
-                case 50:
-                    send_bytes(2,rx);
+                case 50: //2
+                    ledVerd.write(ledVerd.read() == 1 ? 0 : 1);
                     break;
-                case 51:
-                    send_bytes(3,rx);
+                case 51: //3
+                    ledGroc.write(ledGroc.read() == 1 ? 0 : 1);
                     break;
-                case 52:
-                    send_bytes(4,rx);
+                case 52: //4
+                    ledBlau.write(ledBlau.read() == 1 ? 0 : 1);
                     break;
             }
  
