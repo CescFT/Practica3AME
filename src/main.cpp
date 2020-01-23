@@ -1,7 +1,8 @@
 #include <mbed.h>
 #include <stdbool.h>
+#include <stdio.h>
 
-//links de confiança: https://os.mbed.com/cookbook/Bluetooth-Android-Controlled-MBED   /// https://os.mbed.com/handbook/Serial   ///   https://os.mbed.com/questions/83079/Send-data-between-PC-Monitor-and-Bluetoo/
+
 
 DigitalOut ledVerd(D11); //O0
 DigitalOut ledBlau(D10); //O1
@@ -12,16 +13,21 @@ Serial pc(USBTX, USBRX);
 Serial device(D1, D0);
 
 unsigned char receivedvalue;
-bool pc_activity;
+bool pc_activity/*, introduceData=false*/, esperat=false;
+unsigned char rx;
 
 
-int main() {
+void send_bytes(uint8_t len ,uint8_t data)
+{
+    device.putc(len);
+    while(len>0) {
+        device.putc(data);
+        len--;
+    }
+}
 
-  unsigned char rx;
-  device.baud(9600);
-    while(1) {
- 
-        if(pc.readable()) {
+void recieve_bytes(){
+    if(pc.readable()) {
             rx = pc.getc();
             device.putc(rx);
             pc.printf("\n\nreceived : %x",rx);
@@ -44,8 +50,47 @@ int main() {
                 case 52: //4
                     ledBlau.write(ledBlau.read() == 1 ? 0 : 1);
                     break;
+                case 48: //0 --> TOT OK
+                case 53: //5
+                    pc.printf("Puc continuar jugant!");
+                    /*introduceData=true;*/
+                    break;
+                case 55: //7 ---> nivell passat
+                    pc.printf("ENHORABONA! Següent nivell!\n");
+                    break;
+                case 56: //8 --> game over
+                    pc.printf("GAME OVER. Ben jugat!\n\n\n");
+                    break;
+                case 57: //9 --> INPUT KO.
+                    pc.printf("ERROR: Input no correcte.\n");
+                    /*introduceData=true;*/
+                    break;
+
             }
- 
         }
+
+}
+
+int main() {
+
+  
+  unsigned char color;
+
+  device.baud(9600);
+    while(1) {
+
+        recieve_bytes();
+        
+        /*if(introduceData){
+            pc.printf("Introdueix color (Vermell: r,Verd: g,Blau: b,Groc: y):  ");
+            scanf("%c", &color);
+            send_bytes(1, color);
+            introduceData=false;
+        }*/
+        
+        
+       
+        
+
     }
 }
