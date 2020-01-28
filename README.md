@@ -6,6 +6,7 @@ A Universitat Rovira i Virgili's fourth year project involving knowledge about A
 
 For more information please, feel free to check the following files, containing the instructions for running this project:
 * [Manual - Catalan](AME0203_CAT.pdf)
+* [Manual - English](AME0203_ENG.pdf)
 
 ## Software Used
 
